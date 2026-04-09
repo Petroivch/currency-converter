@@ -1,6 +1,27 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
+from flask_swagger_ui import get_swaggerui_blueprint
 
 app = Flask(__name__)
+
+# --- Настройка Swagger UI ---
+SWAGGER_URL = '/swagger' # URL для доступа к интерфейсу Swagger
+API_URL = '/swagger.yaml' # Путь к файлу спецификации (исправлено)
+
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "Currency Converter API"
+    }
+)
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+@app.route('/swagger.yaml')
+def send_swagger():
+    """Отдает файл swagger.yaml для отображения интерфейса"""
+    # Ищет файл swagger.yaml в той же папке, откуда запущен скрипт
+    return send_from_directory('.', 'swagger.yaml')
+# ----------------------------
 
 MOCK_RATES = {
     "USD": 1.0,
