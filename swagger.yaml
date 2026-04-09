@@ -1,0 +1,66 @@
+openapi: 3.0.0
+info:
+  title: Currency Converter API
+  description: API для получения курсов фиатных валют и криптовалют, а также конвертации сумм.
+  version: 1.0.0
+servers:
+  - url: http://localhost:5000/api
+    description: Локальный сервер разработки
+paths:
+  /currencies:
+    get:
+      summary: Получить список поддерживаемых валют
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /rates:
+    get:
+      summary: Получить актуальные курсы валют
+      parameters:
+        - in: query
+          name: base
+          schema:
+            type: string
+            default: USD
+          description: Базовая валюта
+      responses:
+        '200':
+          description: Успешный ответ
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  base:
+                    type: string
+                  rates:
+                    type: object
+  /convert:
+    post:
+      summary: Конвертировать сумму
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [from, to, amount]
+              properties:
+                from:
+                  type: string
+                  example: "BTC"
+                to:
+                  type: string
+                  example: "USD"
+                amount:
+                  type: number
+                  example: 0.5
+      responses:
+        '200':
+          description: Результат
